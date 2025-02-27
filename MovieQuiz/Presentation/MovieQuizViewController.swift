@@ -98,12 +98,13 @@ final class MovieQuizViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.showNextQuestionOrResults()
             self.imageView.layer.borderWidth = 0
+            self.changeButtonClickability()
         }
     }
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questions.count - 1 {
-            let text = "Ваш результат \(correctAnswers)/\(questions.count)"
+            let text = "Ваш результат: \(correctAnswers)/\(questions.count)"
             let alertView = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: text,
@@ -140,14 +141,21 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var counterLabel: UILabel!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var textLabel: UILabel!
+    @IBOutlet weak var noButton: UIButton!
+    @IBOutlet weak var yesButton: UIButton!
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        questions[currentQuestionIndex].correctAnswer == false ? showAnswerResult(isCorrect: true) :
-        showAnswerResult(isCorrect: false)
+        changeButtonClickability()
+        questions[currentQuestionIndex].correctAnswer == false ? showAnswerResult(isCorrect: true) : showAnswerResult(isCorrect: false)
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        questions[currentQuestionIndex].correctAnswer == true ? showAnswerResult(isCorrect: true) :
-        showAnswerResult(isCorrect: false)
+        changeButtonClickability()
+        questions[currentQuestionIndex].correctAnswer == true ? showAnswerResult(isCorrect: true) : showAnswerResult(isCorrect: false)
+    }
+    
+    private func changeButtonClickability() {
+        noButton.isEnabled.toggle()
+        yesButton.isEnabled.toggle()
     }
 }
