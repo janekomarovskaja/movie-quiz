@@ -1,6 +1,12 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController {
+    @IBOutlet weak private var counterLabel: UILabel!
+    @IBOutlet weak private var imageView: UIImageView!
+    @IBOutlet weak private var textLabel: UILabel!
+    @IBOutlet weak var noButton: UIButton!
+    @IBOutlet weak var yesButton: UIButton!
+    
     private struct QuizQuestion {
         let image: String
         let text: String
@@ -89,7 +95,7 @@ final class MovieQuizViewController: UIViewController {
     private func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
-        if isCorrect == true {
+        if isCorrect {
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
             correctAnswers += 1
         } else {
@@ -138,20 +144,14 @@ final class MovieQuizViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    @IBOutlet weak private var counterLabel: UILabel!
-    @IBOutlet weak private var imageView: UIImageView!
-    @IBOutlet weak private var textLabel: UILabel!
-    @IBOutlet weak var noButton: UIButton!
-    @IBOutlet weak var yesButton: UIButton!
-    
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         changeButtonClickability()
-        questions[currentQuestionIndex].correctAnswer == false ? showAnswerResult(isCorrect: true) : showAnswerResult(isCorrect: false)
+        showAnswerResult(isCorrect: !questions[currentQuestionIndex].correctAnswer)
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         changeButtonClickability()
-        questions[currentQuestionIndex].correctAnswer == true ? showAnswerResult(isCorrect: true) : showAnswerResult(isCorrect: false)
+        showAnswerResult(isCorrect: questions[currentQuestionIndex].correctAnswer)
     }
     
     private func changeButtonClickability() {
