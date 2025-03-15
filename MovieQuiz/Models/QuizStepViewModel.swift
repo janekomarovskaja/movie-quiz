@@ -1,8 +1,7 @@
-//
-//  QuizStepViewModel.swift
-//  MovieQuiz
-//
-//  Created by pitergsm on 15.03.2025.
-//
-
 import Foundation
+
+struct QuizResultsViewModel {
+        let title: String
+        let text: String
+        let buttonText: String
+}
