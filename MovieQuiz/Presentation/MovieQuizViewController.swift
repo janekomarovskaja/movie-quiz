@@ -13,10 +13,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var currentQuestion: QuizQuestion?
+    private let alertPresenter = AlertPresenter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        UserDefaults.standard.set(true, forKey: "viewDidLoad")
         let questionFactory = QuestionFactory()
         questionFactory.setup(delegate: self)
         self.questionFactory = questionFactory
@@ -72,35 +73,19 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
             let text = "Ваш результат: \(correctAnswers)/\(questionsAmount)"
-            let alertView = QuizResultsViewModel(
+            let alertView = AlertModel(
                 title: "Этот раунд окончен!",
-                text: text,
-                buttonText: "Сыграть ещё раз")
-            showAlert(quiz: alertView)
+                message: text,
+                buttonText: "Сыграть ещё раз",
+                completion: {self.currentQuestionIndex = 0
+                    self.correctAnswers = 0
+                    self.questionFactory.requestNextQuestion()}
+            )
+            alertPresenter.showAlert(on: self, with: alertView)
         } else {
             currentQuestionIndex += 1
             questionFactory.requestNextQuestion()
         }
-    }
-    
-    private func showAlert(quiz result: QuizResultsViewModel) {
-        let alert = UIAlertController(
-            title: result.title,
-            message: result.text,
-            preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: result.buttonText, style: .default) {[weak self] _ in
-            guard let self = self else { return }
-            
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            
-            questionFactory.requestNextQuestion()
-        }
-        
-        alert.addAction(action)
-        
-        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
