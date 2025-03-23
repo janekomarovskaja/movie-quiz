@@ -2,6 +2,7 @@ import Foundation
 
 class QuestionFactory: QuestionFactoryProtocol {
     weak var delegate: QuestionFactoryDelegate?
+    var usedQuestionsIndex = [Int]()
     
     private var questions: [QuizQuestion] = [
         QuizQuestion(
@@ -47,10 +48,18 @@ class QuestionFactory: QuestionFactoryProtocol {
     ]
     
     func requestNextQuestion() {
-        guard let index = (0..<questions.count).randomElement() else {
+        guard var index = (0..<questions.count).randomElement() else {
             delegate?.didReceiveNextQuestion(question: nil)
             return
         }
+        
+        if questions.count != 0 {
+            while usedQuestionsIndex.contains(index) {
+                index = (0..<questions.count).randomElement()!
+            }
+        }
+        
+        usedQuestionsIndex.append(index)
         
         let question = questions[safe: index]
         delegate?.didReceiveNextQuestion(question: question)
@@ -58,5 +67,9 @@ class QuestionFactory: QuestionFactoryProtocol {
     
     func setup(delegate: QuestionFactoryDelegate) {
         self.delegate = delegate
+    }
+    
+    func resetUsedIndex() {
+        usedQuestionsIndex.removeAll()
     }
 }

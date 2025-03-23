@@ -14,6 +14,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var currentQuestion: QuizQuestion?
     private let alertPresenter = AlertPresenter()
+    let statisticService = StatisticServiceImplementation()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,14 +73,27 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let text = "Ваш результат: \(correctAnswers)/\(questionsAmount)"
+            statisticService.store(correct: correctAnswers, total: questionsAmount)
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd.MM.yy' 'HH:mm"
+            
+            let text = """
+            Ваш результат: \(correctAnswers)/\(questionsAmount)
+            Количество сыгранных квизов: \(statisticService.gamesCount)
+            Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) (\(formatter.string(from: statisticService.bestGame.date)))
+            Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
+            """
             let alertView = AlertModel(
                 title: "Этот раунд окончен!",
                 message: text,
                 buttonText: "Сыграть ещё раз",
-                completion: {self.currentQuestionIndex = 0
+                completion: {
+                    self.currentQuestionIndex = 0
                     self.correctAnswers = 0
-                    self.questionFactory.requestNextQuestion()}
+                    self.questionFactory.resetUsedIndex()
+                    self.questionFactory.requestNextQuestion()
+                }
             )
             alertPresenter.showAlert(on: self, with: alertView)
         } else {
