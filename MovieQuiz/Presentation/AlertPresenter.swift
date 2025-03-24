@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class AlertPresenter: UIViewController {
+final class AlertPresenter: UIViewController {
     func showAlert(on viewController: MovieQuizViewController, with model: AlertModel) {
         let alert = UIAlertController (title: model.title, message: model.message, preferredStyle: .alert)
         
