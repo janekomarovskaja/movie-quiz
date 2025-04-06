@@ -42,8 +42,27 @@ class QuestionFactory: QuestionFactoryProtocol {
             
             let rating = Float(movie.rating) ?? 0
             
-            let text = "Рейтинг этого фильма больше чем 7?"
-            let correctAnswer = rating > 7
+            enum сomparison: String, CaseIterable {
+                case equal = "равен"
+                case greater = "больше чем"
+                case less = "меньше чем"
+            }
+            
+            let ratingValue = (7..<10).randomElement() ?? 0
+            
+            let randomComparison = сomparison.allCases.randomElement() ?? .equal
+            
+            let text = "Рейтинг этого фильма \(randomComparison.rawValue) \(ratingValue)?"
+            
+            var correctAnswer: Bool
+            switch randomComparison {
+            case .equal:
+                correctAnswer = rating == Float(ratingValue)
+            case .greater:
+                correctAnswer = rating > Float(ratingValue)
+            case .less:
+                correctAnswer = rating < Float(ratingValue)
+            }
             
             let question = QuizQuestion(image: imageData,
                                         text: text,
@@ -70,7 +89,7 @@ class QuestionFactory: QuestionFactoryProtocol {
                 }
             }
         }
-    } 
+    }
     
     func setup(delegate: QuestionFactoryDelegate) {
         self.delegate = delegate
