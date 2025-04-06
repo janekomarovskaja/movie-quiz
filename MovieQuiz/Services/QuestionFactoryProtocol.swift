@@ -1,6 +1,7 @@
 import Foundation
 
 protocol QuestionFactoryProtocol {
-    func requestNextQuestion()
+    func requestNextQuestion(completion: (() -> Void)?)
     func resetUsedIndex()
+    func loadData()
 }
