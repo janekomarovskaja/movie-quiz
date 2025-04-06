@@ -122,8 +122,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     func changeButtonClickability() {
-        noButton.isEnabled.toggle()
-        yesButton.isEnabled.toggle()
+        DispatchQueue.main.async { [weak self] in
+            self?.noButton.isEnabled.toggle()
+            self?.yesButton.isEnabled.toggle()
+        }
     }
     
     private func showLoadingIndicator() {
@@ -147,9 +149,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 self.questionFactory?.loadData()
                 self.questionFactory?.resetUsedIndex()
                 self.questionFactory?.requestNextQuestion() {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.changeButtonClickability()
-                    }
+                    self.changeButtonClickability()
                 }
             }
         alertPresenter.showAlert(on: self, with: networkErrorAlert)

@@ -48,7 +48,7 @@ class QuestionFactory: QuestionFactoryProtocol {
                 case less = "меньше чем"
             }
             
-            let ratingValue = (7..<10).randomElement() ?? 0
+            let ratingValue = (8..<10).randomElement() ?? 0
             
             let randomComparison = сomparison.allCases.randomElement() ?? .equal
             
