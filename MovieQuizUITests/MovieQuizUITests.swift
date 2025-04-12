@@ -65,6 +65,21 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertEqual(alert.buttons.firstMatch.label, "Сыграть ещё раз")
     }
     
+    func testAlertClosed() {
+        sleep(2)
+        for _ in 0..<10 {
+            app.buttons["NoButton"].tap()
+            sleep(2)
+        }
+        let alert = app.alerts["Этот раунд окончен!"]
+        alert.buttons.firstMatch.tap()
+        XCTAssertFalse(alert.exists)
+        
+        sleep(2)
+        let indexLabel = app.staticTexts["Index"]
+        XCTAssertEqual(indexLabel.label, "1/10")
+    }
+    
     @MainActor
     func testExample() throws {
         // UI tests must launch the application that they test.
